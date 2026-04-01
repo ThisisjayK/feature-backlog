@@ -1,0 +1,213 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary)}
+.rm{padding:.75rem 0}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:5px 10px;font-size:11px;color:var(--color-text-secondary);display:flex;align-items:center;gap:5px}
+.stat b{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.pbar{height:10px;background:var(--color-background-secondary);border-radius:5px;overflow:hidden;display:flex;margin-bottom:6px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.25rem;font-size:11px;color:var(--color-text-secondary);align-items:center}
+.ldot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.li{display:flex;align-items:center;gap:4px}
+.phase{margin-bottom:.875rem;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.ph{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.ph-acc{width:4px;height:30px;border-radius:2px;flex-shrink:0}
+.ph-info{flex:1}
+.ph-title{font-size:12px;font-weight:500;line-height:1.3}
+.ph-sub{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.ph-badges{display:flex;gap:5px;align-items:center}
+.spb{font-size:10px;font-family:var(--font-mono);padding:2px 7px;border-radius:100px;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary);white-space:nowrap}
+.cntb{font-size:10px;padding:2px 7px;border-radius:100px;background:var(--color-background-secondary);color:var(--color-text-secondary);white-space:nowrap}
+.goal{padding:7px 12px;font-size:11px;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);line-height:1.5}
+.done-grid{display:flex;flex-wrap:wrap;gap:5px;padding:10px 12px}
+.dp{font-size:11px;padding:3px 9px;border-radius:100px;cursor:pointer;transition:opacity .1s;white-space:nowrap}
+.dp:hover{opacity:.8}
+.feat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.fc{padding:8px 12px;border-bottom:0.5px solid var(--color-border-tertiary);border-right:0.5px solid var(--color-border-tertiary);cursor:pointer;transition:background .1s;display:flex;flex-direction:column;gap:3px}
+.fc:hover{background:var(--color-background-secondary)}
+.fc:nth-child(2n){border-right:none}
+.fn{font-size:12px;font-weight:500;line-height:1.35}
+.fm{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.ab{font-size:10px;padding:2px 6px;border-radius:100px;font-weight:500;white-space:nowrap}
+.fid{font-size:10px;font-family:var(--font-mono);color:var(--color-text-secondary)}
+.fps{font-size:10px;color:var(--color-text-secondary);margin-left:auto;white-space:nowrap}
+.a-score{background:#E1F5EE;color:#085041}
+.a-pipe{background:#E6F1FB;color:#0C447C}
+.a-prot{background:#EEEDFE;color:#3C3489}
+.a-soc{background:#FAECE7;color:#712B13}
+.a-clin{background:#FAEEDA;color:#633806}
+.a-pers{background:#FBEAF0;color:#72243E}
+.a-notif{background:#F1EFE8;color:#444441}
+.a-bill{background:#EAF3DE;color:#27500A}
+.a-int{background:#F1EFE8;color:#444441}
+</style>
+
+<div class="rm">
+<div class="stats">
+  <div class="stat"><b>64</b>features</div>
+  <div class="stat"><b style="color:#3B6D11">22</b>done</div>
+  <div class="stat"><b>42</b>remaining</div>
+  <div class="stat"><b>365</b>total SP</div>
+  <div class="stat"><b style="color:#3B6D11">121</b>SP done</div>
+  <div class="stat"><b>244</b>SP remaining</div>
+</div>
+<div class="pbar">
+  <div style="width:33.1%;background:#3B6D11"></div>
+  <div style="width:17.8%;background:#0F6E56;opacity:.6"></div>
+  <div style="width:22.5%;background:#534AB7;opacity:.45"></div>
+  <div style="width:15.9%;background:#854F0B;opacity:.4"></div>
+  <div style="width:10.7%;background:#993C1D;opacity:.3"></div>
+</div>
+<div class="legend">
+  <div class="li"><div class="ldot" style="background:#3B6D11"></div>Done</div>
+  <div class="li"><div class="ldot" style="background:#0F6E56"></div>Phase 1 — Scoring + Apple Health + sex personalization</div>
+  <div class="li"><div class="ldot" style="background:#534AB7"></div>Phase 2 — Protocol + social health + notifications</div>
+  <div class="li"><div class="ldot" style="background:#854F0B"></div>Phase 3 — Clinician backend + wearables</div>
+  <div class="li"><div class="ldot" style="background:#993C1D"></div>Phase 4 — Stripe + FHIR</div>
+  <div style="margin-left:auto;font-family:var(--font-mono)">33% complete</div>
+</div>
+
+<div id="roadmap"></div>
+</div>
+
+<script>
+const areaMap = {
+  'Scoring Engine':'a-score','Data Pipeline':'a-pipe','Protocol Engine':'a-prot',
+  'Social Health':'a-soc','Clinician Portal':'a-clin','Personalization':'a-pers',
+  'Notifications':'a-notif','Billing':'a-bill','Integrations':'a-int',
+  'Frontend / UX':'a-notif','Auth & Onboarding':'a-pipe'
+};
+
+const phases = [
+  {
+    label:'Completed',theme:'Full frontend + basic backend persistence',
+    color:'#3B6D11',sp:121,count:22,isDone:true,
+    done:['Authentication','Onboarding flow','Dashboard','Bottom-tab navigation',
+      'Weekly check-in + streaks','Activity tracking','Nutrition tracking',
+      'Stress & HRV tracking','Lab results upload UI','Device connections UI',
+      'Protocol recommendations UI','Bio age scoring UI','Insights screens',
+      'Learning / articles','Profile management','Notifications UI',
+      'Subscription screen','Patient sharing UI','Caregiver view',
+      'Clinician portal UI','Backend persistence','UX polish']
+  },
+  {
+    label:'Phase 1',theme:'Make the score real',
+    goal:'Build the actual scoring algorithm and replace every placeholder number with a live, sex-calibrated biological age score. Critical path — all other phases depend on this.',
+    color:'#0F6E56',sp:65,count:12,
+    feats:[
+      {id:'F-023',n:'Multi-domain scoring algorithm',area:'Scoring Engine',pts:13},
+      {id:'F-024',n:'30-day trajectory classifier',area:'Scoring Engine',pts:5},
+      {id:'F-025',n:'Scheduled recalculation job',area:'Scoring Engine',pts:5},
+      {id:'F-026',n:'Fallback + staleness logic',area:'Scoring Engine',pts:3},
+      {id:'F-027',n:'Threshold alert event system',area:'Scoring Engine',pts:5},
+      {id:'F-028',n:'Apple Health full integration',area:'Data Pipeline',pts:8},
+      {id:'F-029',n:'Sex as profile attribute',area:'Personalization',pts:2},
+      {id:'F-030',n:'Sex-stratified reference distributions',area:'Personalization',pts:8},
+      {id:'F-031',n:'Sex-specific domain weights',area:'Personalization',pts:5},
+      {id:'F-032',n:'Sex-specific biomarker ranges',area:'Personalization',pts:5},
+      {id:'F-033',n:'Sex-specific HRV & HR baselines',area:'Personalization',pts:3},
+      {id:'F-034',n:'Sex-specific threshold values',area:'Personalization',pts:3},
+    ]
+  },
+  {
+    label:'Phase 2',theme:'Make recommendations intelligent',
+    goal:'Replace static protocol cards with loop-targeted, ranked interventions using the CLD framework. Add the Social Health Engine and intelligent notifications.',
+    color:'#534AB7',sp:82,count:14,
+    feats:[
+      {id:'F-035',n:'CLD loop activation matrix',area:'Protocol Engine',pts:13},
+      {id:'F-036',n:'Protocol library enrichment',area:'Protocol Engine',pts:8},
+      {id:'F-037',n:'Protocol Engine job (threshold-triggered)',area:'Protocol Engine',pts:8},
+      {id:'F-038',n:'Intervention filtering & ranking',area:'Protocol Engine',pts:5},
+      {id:'F-039',n:'Adherence tracking backend',area:'Protocol Engine',pts:5},
+      {id:'F-040',n:'5-dimension social health scoring',area:'Social Health',pts:8},
+      {id:'F-041',n:'Composite Social Health Score',area:'Social Health',pts:3},
+      {id:'F-042',n:'12-week social dimension trends',area:'Social Health',pts:5},
+      {id:'F-043',n:'Single-node dependency detection',area:'Social Health',pts:8},
+      {id:'F-044',n:'Social threshold alerts',area:'Social Health',pts:3},
+      {id:'F-045',n:'Threshold alert push notifications',area:'Notifications',pts:5},
+      {id:'F-046',n:'Configurable check-in reminders',area:'Notifications',pts:3},
+      {id:'F-047',n:'Sex-based personalization frontend',area:'Personalization',pts:5},
+      {id:'F-048',n:'Protocol library sex-relevance tagging',area:'Personalization',pts:3},
+    ]
+  },
+  {
+    label:'Phase 3',theme:'Complete clinical + wearable layers',
+    goal:'Make the clinician portal operate on live scoring data with a proper consent model. Complete the Oura, Whoop, and Garmin integrations.',
+    color:'#854F0B',sp:58,count:11,
+    feats:[
+      {id:'F-049',n:'NPI lookup + clinician verification',area:'Clinician Portal',pts:3},
+      {id:'F-050',n:'Consent record model + token generation',area:'Clinician Portal',pts:8},
+      {id:'F-051',n:'Consent revocation (60s invalidation)',area:'Clinician Portal',pts:3},
+      {id:'F-052',n:'Live patient trajectory data in portal',area:'Clinician Portal',pts:8},
+      {id:'F-053',n:'Portal auto-refresh on recalculation',area:'Clinician Portal',pts:3},
+      {id:'F-054',n:'Pre-visit summary algorithm',area:'Clinician Portal',pts:8},
+      {id:'F-055',n:'Clinician-flagged intervention promotion',area:'Clinician Portal',pts:5},
+      {id:'F-056',n:'Oura OAuth + background sync',area:'Data Pipeline',pts:5},
+      {id:'F-057',n:'Whoop OAuth + background sync',area:'Data Pipeline',pts:5},
+      {id:'F-058',n:'Garmin OAuth + background sync',area:'Data Pipeline',pts:5},
+      {id:'F-059',n:'Re-engagement notification sequence',area:'Notifications',pts:5},
+    ]
+  },
+  {
+    label:'Phase 4',theme:'Monetize + connect externally',
+    goal:'Stripe integration for payment processing, HL7 FHIR for EHR-connected lab delivery, and lab OCR engine for PDF processing.',
+    color:'#993C1D',sp:39,count:5,
+    feats:[
+      {id:'F-060',n:'Stripe payment + subscription lifecycle',area:'Billing',pts:8},
+      {id:'F-061',n:'Stripe webhook handling',area:'Billing',pts:5},
+      {id:'F-062',n:'Paywall gate logic',area:'Billing',pts:5},
+      {id:'F-063',n:'HL7 FHIR lab delivery',area:'Integrations',pts:13},
+      {id:'F-064',n:'Lab OCR engine',area:'Data Pipeline',pts:8},
+    ]
+  }
+];
+
+function render() {
+  let html = '';
+  phases.forEach(p => {
+    const statusLabel = p.isDone ? 'All complete' : 'Not started';
+    html += `<div class="phase">
+      <div class="ph">
+        <div class="ph-acc" style="background:${p.color}"></div>
+        <div class="ph-info">
+          <div class="ph-title">${p.label} — ${p.theme}</div>
+          ${!p.isDone ? `<div class="ph-sub">${p.count} features</div>` : ''}
+        </div>
+        <div class="ph-badges">
+          <span class="spb">${p.sp} SP</span>
+          <span class="cntb">${p.isDone ? 'Done' : 'Not started'}</span>
+        </div>
+      </div>`;
+
+    if (!p.isDone && p.goal) {
+      html += `<div class="goal">${p.goal}</div>`;
+    }
+
+    if (p.isDone) {
+      html += `<div class="done-grid">`;
+      p.done.forEach(name => {
+        html += `<span class="dp" style="background:#EAF3DE;color:#3B6D11">${name}</span>`;
+      });
+      html += `</div>`;
+    } else {
+      html += `<div class="feat-grid">`;
+      p.feats.forEach(f => {
+        const ac = areaMap[f.area] || 'a-notif';
+        html += `<div class="fc" onclick="sendPrompt('Tell me more about ${f.n} (${f.id})')">
+          <div class="fn">${f.n}</div>
+          <div class="fm">
+            <span class="ab ${ac}">${f.area}</span>
+            <span class="fid">${f.id}</span>
+            <span class="fps">${f.pts} pts</span>
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+    html += `</div>`;
+  });
+  document.getElementById('roadmap').innerHTML = html;
+}
+render();
+</script>
